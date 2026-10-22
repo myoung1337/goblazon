@@ -1,0 +1,105 @@
+<!-- checkout.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - Goblazon</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Goblin+One&display=swap" rel="stylesheet" />
+</head>
+<script>
+    function renderCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartContainer = document.getElementById('cart-items');
+      const totalContainer = document.getElementById('total');
+  
+      if (cart.length === 0) {
+        cartContainer.innerHTML = '<p>Your cart is empty.</p>';
+        totalContainer.textContent = '';
+        return;
+      }
+  
+      let total = 0;
+      cartContainer.innerHTML = '';
+  
+      cart.forEach((item, index) => {
+        total += item.price * item.quantity;
+  
+        cartContainer.innerHTML += `
+          <div class="cart-item" data-index="${index}">
+            <strong>${item.name}</strong> - ${item.price}g x ${item.quantity} = ${item.price * item.quantity}g
+            <div class="cart-actions">
+              <button class="decrease">➖</button>
+              <button class="increase">➕</button>
+            </div>
+          </div>
+        `;
+      });
+  
+      totalContainer.textContent = `Total: ${total} gold`;
+  
+      // Add event listeners to buttons
+      document.querySelectorAll('.decrease').forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+          if (cart[i].quantity > 1) {
+            cart[i].quantity--;
+          } else {
+            cart.splice(i, 1);
+          }
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+        });
+      });
+  
+      document.querySelectorAll('.increase').forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+          cart[i].quantity++;
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+        });
+      });
+    }
+  
+    document.addEventListener('DOMContentLoaded', renderCart);
+  </script>
+  
+  
+<body>
+  <header>
+    <div class="logo">Goblazon</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <a href="checkout.html" class="cart-button">
+      🛒 Cart <span class="cart-count">0</span>
+    </a>
+  </header>
+
+  <main>
+    <section class="checkout">
+        <h2>Your Goblin Loot</h2>
+        <div id="cart-items"></div>
+        <p id="total"></p>
+        <button id="checkout-btn">Proceed to Payment</button>
+      </section>
+      
+    <section class="checkout">
+      <h2>Your Goblin Loot</h2>
+      <p>Your cart is currently empty... for now!</p>
+
+      <!-- In the future, dynamically list items here -->
+      <button disabled>Proceed to Payment</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Goblazon. All Rights Reserved.</p>
+  </footer>
+</body>
+</html>
